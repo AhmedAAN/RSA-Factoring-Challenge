@@ -37,15 +37,15 @@ def findSmallestDivisor(n):
 def smallNumbers(number):
     i = 2
     while i < int(math.sqrt(number)) and number % i != 0:
-        i+=1
+        if i < 100000:
+            i+=1
+        else:
+            i = findSmallestDivisor(number)
     return i
 
 with open(sys.argv[1], mode = "r") as file:
     lines = file.readlines()
 for line in lines:
     number = int(line) 
-    if number < 100000:
-        smallestDivisor = smallNumbers(number)
-    else:
-        smallestDivisor = findSmallestDivisor(number)
+    smallestDivisor = smallNumbers(number)
     print(f"{number}={int(number/smallestDivisor)}*{smallestDivisor}")
