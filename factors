@@ -1,3 +1,4 @@
+#!/usr/bin/python3v
 import sys
 import math
 
@@ -13,7 +14,7 @@ for line in lines:
         divisor = 3
     else:
         i = 6
-        while i <= int(math.sqrt(number)) and divisor == 0:
+        while i <= int(math.sqrt(number) + 1) and divisor == 0:
             if number % (i - 1) == 0:
                 divisor = i - 1
             if number % (i + 1) == 0:
