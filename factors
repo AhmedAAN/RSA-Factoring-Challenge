@@ -1,11 +1,31 @@
 #!/usr/bin/python3
-import sys
+import math
 import random
+
+def generate_primes(limit):
+    # Generate a list of prime numbers up to the given limit using the Sieve of Eratosthenes
+    sieve = [True] * (limit + 1)
+    sieve[0] = sieve[1] = False
+
+    for i in range(2, int(math.sqrt(limit)) + 1):
+        if sieve[i]:
+            for j in range(i * i, limit + 1, i):
+                sieve[j] = False
+
+    primes = [num for num, is_prime in enumerate(sieve) if is_prime]
+    return primes
 
 def gcd(a, b):
     while b:
         a, b = b, a % b
     return a
+
+def trial_division(n, primes):
+    # Check divisibility using trial division with precomputed primes
+    for prime in primes:
+        if n % prime == 0:
+            return prime
+    return None
 
 def pollard_rho(n):
     if n % 2 == 0:
@@ -27,25 +47,26 @@ def pollard_rho(n):
 
     return d
 
-def findSmallestDivisor(n):
+def find_smallest_divisor(n):
     if n <= 1:
         return n
 
+    # Generate prime numbers up to the square root of n
+    limit = int(math.sqrt(n))
+    primes = generate_primes(limit)
+
+    # Check divisibility using trial division
+    divisor = trial_division(n, primes)
+    if divisor:
+        return divisor
+
+    # Apply Pollard's rho algorithm as a fallback
     divisor = pollard_rho(n)
     return divisor
-
-def smallNumbers(number):
-    i = 2
-    while i < int(math.sqrt(number)) and number % i != 0:
-        if i < 100000:
-            i+=1
-        else:
-            i = findSmallestDivisor(number)
-    return i
 
 with open(sys.argv[1], mode = "r") as file:
     lines = file.readlines()
 for line in lines:
-    number = int(line) 
-    smallestDivisor = smallNumbers(number)
-    print(f"{number}={int(number/smallestDivisor)}*{smallestDivisor}")
+    number = int(line)
+    smallest_divisor = find_smallest_divisor(number)
+    print(f"{number}={int(number/smallest_divisor)}*{smallestDivisor}")
