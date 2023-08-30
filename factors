@@ -1,72 +1,29 @@
 #!/usr/bin/python3
-import math
-import random
+"""factorize given set of numbers in a file to product of two small numbers"""
+from sys import argv
 
-def generate_primes(limit):
-    # Generate a list of prime numbers up to the given limit using the Sieve of Eratosthenes
-    sieve = [True] * (limit + 1)
-    sieve[0] = sieve[1] = False
 
-    for i in range(2, int(math.sqrt(limit)) + 1):
-        if sieve[i]:
-            for j in range(i * i, limit + 1, i):
-                sieve[j] = False
+def factorize(number_to_check):
+    """"find two small numbers that multiply to give a given number"""
+    i = 2
 
-    primes = [num for num, is_prime in enumerate(sieve) if is_prime]
-    return primes
+    if number_to_check < 2:
+        return
+    
+    while number_to_check % i:
+        i += 1
+    print("{:.0f}={:.0f}*{:.0f}".format(number_to_check, number_to_check / i, i))
 
-def gcd(a, b):
-    while b:
-        a, b = b, a % b
-    return a
+if len(argv) != 2:
+    exit()
 
-def trial_division(n, primes):
-    # Check divisibility using trial division with precomputed primes
-    for prime in primes:
-        if n % prime == 0:
-            return prime
-    return None
+try:
+    with open(argv[1]) as file:
+        line = file.readline()
 
-def pollard_rho(n):
-    if n % 2 == 0:
-        return 2
-
-    x = random.randint(2, n - 1)
-    y = x
-    c = random.randint(1, n - 1)
-    d = 1
-
-    while d == 1:
-        x = (x * x + c) % n
-        y = (y * y + c) % n
-        y = (y * y + c) % n
-        d = gcd(abs(x - y), n)
-
-        if d == n:
-            return pollard_rho(n)
-
-    return d
-
-def find_smallest_divisor(n):
-    if n <= 1:
-        return n
-
-    # Generate prime numbers up to the square root of n
-    limit = int(math.sqrt(n))
-    primes = generate_primes(limit)
-
-    # Check divisibility using trial division
-    divisor = trial_division(n, primes)
-    if divisor:
-        return divisor
-
-    # Apply Pollard's rho algorithm as a fallback
-    divisor = pollard_rho(n)
-    return divisor
-
-with open(sys.argv[1], mode = "r") as file:
-    lines = file.readlines()
-for line in lines:
-    number = int(line)
-    smallest_divisor = find_smallest_divisor(number)
-    print(f"{number}={int(number/smallest_divisor)}*{smallestDivisor}")
+        while line != "":
+            number_to_check = int(line.split('\n')[0])
+            factorize(number_to_check)
+            line = file.readline()
+except:
+    pass
