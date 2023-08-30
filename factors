@@ -34,9 +34,18 @@ def findSmallestDivisor(n):
     divisor = pollard_rho(n)
     return divisor
 
+def smallNumbers(number):
+    i = 2
+    while i < int(math.sqrt(number)) and number % i != 0:
+        i+=1
+    return i
+
 with open(sys.argv[1], mode = "r") as file:
     lines = file.readlines()
 for line in lines:
     number = int(line) 
-    smallestDivisor = findSmallestDivisor(number)
+    if number < 100000:
+        smallestDivisor = smallNumbers(number)
+    else:
+        smallestDivisor = findSmallestDivisor(number)
     print(f"{number}={int(number/smallestDivisor)}*{smallestDivisor}")
